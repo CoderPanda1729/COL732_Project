@@ -1,4 +1,4 @@
-# Backend Development using Python-Flask and MySQL (Version-1)
+# Backend Development using Python-Flask and MySQL
 
 ## User_model
 1. User Login
