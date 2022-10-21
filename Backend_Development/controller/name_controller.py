@@ -1,5 +1,5 @@
 from app import app
-from model.name_model import name_model
+from model.nameModel import nameModel
 from flask import request
 from flask import make_response
 
@@ -15,7 +15,7 @@ def process_json():
 def getName():
     json = process_json()
     if(json != 'Content-Type not supported!'):
-        obj=name_model()
+        obj=nameModel()
         return obj.name_get(json)
     else:
         return make_response({'format':" 'Content-Type not supported!'"},404)
