@@ -47,3 +47,16 @@ class user_model():
                 return make_response({"message":"NO_SUCH_ACCOUNT_EXIT"},404)
         else:
             return make_response({"message":"WRONG_INPUT_FORMAT"},404)
+    
+    def user_forgot_password_model(self , data):
+
+        if 'entry_no' in data and 'role' in data and 'password' in data:
+
+            self.cur.execute(f"UPDATE user_login SET password='{data['password']}' WHERE entry_no={data['entry_no']} AND role={data['role']}")
+
+            if self.cur.rowcount>0:
+                return make_response({"message":"UPDATED_SUCCESSFULLY"},201)
+            else:
+                return make_response({"message":"NOTHING_TO_UPDATE"},204)
+        else:
+            return make_response({"message":"WRONG_INPUT_FORMAT"},404)
