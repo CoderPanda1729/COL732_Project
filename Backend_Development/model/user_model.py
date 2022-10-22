@@ -52,11 +52,11 @@ class user_model():
 
         if 'entry_no' in data and 'role' in data and 'password' in data:
 
-            self.cur.execute(f"UPDATE user_login SET password='{data['password']}' WHERE entry_no={data['entry_no']} AND role={data['role']}")
+            self.cursor.execute(f"UPDATE user_login SET password = '{data['password']}'  WHERE entry_no = %s AND role=%s ", (data['entry_no'], data['role'],))
 
-            if self.cur.rowcount>0:
+            if self.cursor.rowcount>0:
                 return make_response({"message":"UPDATED_SUCCESSFULLY"},201)
             else:
-                return make_response({"message":"NOTHING_TO_UPDATE"},204)
+                return make_response({"message":"WRONG_INFO"},400) 
         else:
             return make_response({"message":"WRONG_INPUT_FORMAT"},404)
