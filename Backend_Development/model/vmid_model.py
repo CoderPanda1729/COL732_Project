@@ -1,4 +1,3 @@
-from doctest import REPORT_CDIFF
 import mysql.connector
 import json
 from flask import make_response
@@ -7,7 +6,7 @@ from configs.config import dbconfig
 
 class VmidModel:
     def __init__(self):
-
+        # print("hi there")
         try:
 
             self.conn = mysql.connector.connect(host=dbconfig['host'],user=dbconfig['username'],password=dbconfig['password'],database=dbconfig['database'])
@@ -34,6 +33,7 @@ class VmidModel:
         self.cursor.execute('SELECT * FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no = %s', (course_id, assignment_id,entry_no))
         vm=self.cursor.fetchone()
         # return everything in assignment if it exists
+        print(entry_no,course_id)
         if vm:
             # returing error as VM already assigned
             return make_response({"message":"VM Already Assigned"},404)
