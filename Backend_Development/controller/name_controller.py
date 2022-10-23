@@ -15,7 +15,7 @@ def process_json():
 def getName():
     json = process_json()
     if(json != 'Content-Type not supported!'):
-        obj=nameModel()
+        obj=NameModel()
         return obj.name_get(json)
     else:
         return make_response({'format':" 'Content-Type not supported!'"},404)
