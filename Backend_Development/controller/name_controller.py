@@ -1,5 +1,5 @@
 from app import app
-from model.nameModel import nameModel
+from model.name_model import NameModel
 from flask import request
 from flask import make_response
 
