@@ -1,5 +1,6 @@
 from app import app
 from model.user_model import user_model
+from model.name_model import NameModel
 from flask import request
 from flask import make_response
 
@@ -19,7 +20,10 @@ def signup():
     
     if(process_json()!='Content-Type not supported!'):
         obj=user_model()
-        return obj.user_signup_model(process_json())
+        obj1 = NameModel()
+        json = process_json()
+        obj1.add_name(json['entry_no'],json['name'])
+        return obj.user_signup_model(json)
     else:
         return make_response({'format':" 'Content-Type not supported!'"},404)
         

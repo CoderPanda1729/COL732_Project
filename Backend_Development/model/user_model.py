@@ -16,9 +16,7 @@ class user_model():
             sql='''CREATE TABLE user_login(
                 entry_no CHAR(40) NOT NULL,
                 role CHAR(40),
-                name CHAR(60) ,
-                password CHAR(100),
-                primary key(entry_no,role)
+                password CHAR(100)
             )'''
 
             self.cursor.execute(sql)
@@ -29,24 +27,13 @@ class user_model():
 
     def user_signup_model(self,data):
 
-        if 'entry_no' in data and 'password' in data and 'role' in data and 'name' in data:
-
-            self.cursor.execute('SELECT * FROM user_login WHERE entry_no = %s  AND role=%s ', (data['entry_no'],data['role'],))
-            account=self.cursor.fetchone()
-            if not account:
-                self.cursor.execute(f"INSERT INTO user_login(name,entry_no, role, password) VALUES( '{data['name']}','{data['entry_no']}', '{data['role']}', '{data['password']}')")
-                return make_response({"message":"SignUp_SUCCESSFULLY"},201)
-            else:
-                return make_response({"message":"ACCOUNT_ALREADY_EXIT"},404)
-
-        else:
-            return make_response({"message":"WRONG_INPUT_FORMAT"},404)
-
+        self.cursor.execute(f"INSERT INTO user_login(entry_no, role, password) VALUES('{data['entry_no']}', '{data['role']}', '{data['password']}')")
+        return make_response({"message":"SignUp_SUCCESSFULLY"},201)
         
     def user_login_model(self,data):
 
         if 'entry_no' in data and 'password' in data and 'role' in data:
-
+            print(data)
             entry_num=data['entry_no']
             password=data['password']
             role=data['role']

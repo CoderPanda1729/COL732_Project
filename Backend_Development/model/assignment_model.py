@@ -14,13 +14,13 @@ class AssignmentModel:
             self.cursor=self.conn.cursor(dictionary=True)
 
             sql='''CREATE TABLE IF NOT EXISTS assignment(
-                course_id INT,
-                assignment_id INT,
-                start_time DATETIME NOT NULL,
-                end_time DATETIME NOT NULL,
-                template_vmid INT NOT NULL,
-                pdf MEDIUMBLOB,
-                primary key (course_id,assignment_id)
+                course_id varchar(80),
+                asmt_id varchar(80),
+                start_time INT NOT NULL,
+                end_time INT NOT NULL,
+                template_vmid INT,
+                pdf_link varchar(200),
+                primary key (course_id,asmt_id)
             )'''
 
             self.cursor.execute(sql)
@@ -30,8 +30,8 @@ class AssignmentModel:
             print(e)
             print("Some Connection Error")
 
-    def assignment_get(self,data,course_id,assignment_id):
-        self.cursor.execute('SELECT * FROM assignment WHERE course_id = %s AND assignment_id = %s', (course_id, assignment_id))
+    def assignment_get(self,data,course_id,asmt_id):
+        self.cursor.execute('SELECT * FROM assignment WHERE course_id = %s AND asmt_id = %s', (course_id, asmt_id))
         assignment=self.cursor.fetchone()
         # return everything in assignment if it exists
         if assignment:
@@ -39,32 +39,25 @@ class AssignmentModel:
         else:
             return make_response({"message":"Assignment not found"},404)
 
-    def assignment_upload_pdf(self, data, course_id, assignment_id):
-        self.cursor.execute('SELECT * FROM assignment WHERE course_id = %s AND assignment_id = %s', (course_id, assignment_id))
-        assignment=self.cursor.fetchone()
-        # check if assignment exists
-        if assignment:
-            self.cursor.execute('UPDATE assignment SET pdf = %s WHERE course_id = %s AND assignment_id = %s', (data,course_id,assignment_id))
-            return make_response({"message":"PDF updated succsessfully"},201)
-        else:
-            return make_response({"message":"Assignment not found"},404)
-
-    def assignment_update(self, data, course_id, assignment_id):
-        self.cursor.execute('SELECT * FROM assignment WHERE course_id = %s AND assignment_id = %s', (course_id, assignment_id))
-        assignment=self.cursor.fetchone()
-        # check if assignment exists
-        if assignment:
-            # update all columns
-            for column in ['start_time','end_time','template_vmid','pdf']:
-                if column in data:
-                    self.cursor.execute(f"UPDATE assignment SET {column}=%s WHERE course_id=%s AND assignment_id=%s", (data[column], course_id, assignment_id))
-            return make_response({"message":"Assignment update"},201)
-        else:
-            # if the json has complete data, create a new assignment
-            # TODO: handle pdf
-            if 'start_time' in data and 'end_time' in data  and 'template_vmid' in data:
-                self.cursor.execute(f"INSERT INTO assignment(course_id, assignment_id, start_time, end_time, template_vmid) VALUES('{course_id}', '{assignment_id}', '{data['start_time']}', '{data['end_time']}', '{data['template_vmid']}')")
-                return make_response({"message":"Assignment created"},201)
-            else:
-                return make_response({"message":"Assignment not found"},404)
+    def assignment_update(self, data, course_id, asmt_id):
+        # update all columns
+        course_id = data['course_id']
+        asmt_id = data['asmt_id']
+        for column in ['start_time','end_time','pdf_link']:
+            if column in data:
+                self.cursor.execute(f"UPDATE assignment SET {column}=%s WHERE course_id=%s AND asmt_id=%s", (data[column], course_id, asmt_id))
+        return make_response({"message":"Assignment updated"},201)
     
+    def assignment_create(self, data):
+        course_id = data['course_id']
+        pdf_link = data['pdf_link']
+        asmt_id = data['asmt_id']
+        start_time = int(data['start_time'])
+        end_time = int(data['end_time'])
+        self.cursor.execute(f"INSERT INTO assignment(course_id, asmt_id, start_time, end_time, pdf_link) VALUES('{course_id}', '{asmt_id}', '{start_time}', '{end_time}','{pdf_link}')")
+        return make_response({"message":"Assignment created"},201)
+    
+    def getAllAss(self,course_id):
+        self.cursor.execute(f"select asmt_id,start_time,end_time,template_vmid,pdf_link from assignment where course_id='{course_id}';")
+        asmts = self.cursor.fetchall()
+        return asmts
