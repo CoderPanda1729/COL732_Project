@@ -1,8 +1,8 @@
+from asyncio.windows_events import NULL
 from app import app
 from model.user_model import user_model
 from flask import request
 from flask import make_response
-
 
 
 def process_json():
@@ -32,7 +32,7 @@ def login():
         return obj.user_login_model(process_json())
         
     else:
-        return make_response({'format':" 'Content-Type not supported!'"},404)
+        return make_response({'format':" 'Content-Type not supported!'"},404), None
 
 @app.route("/user/forgotPassword",methods=["POST"])
 def forgotPassword():

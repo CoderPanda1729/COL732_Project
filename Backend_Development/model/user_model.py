@@ -2,6 +2,9 @@ import mysql.connector
 import json
 from flask import make_response
 from configs.config import dbconfig
+import jwt
+import datetime
+import app
 
 
 class user_model():
@@ -42,7 +45,25 @@ class user_model():
         else:
             return make_response({"message":"WRONG_INPUT_FORMAT"},404)
 
-        
+    def encode_auth_token(self, s):
+        """
+        Generates the Auth Token
+        :return: string
+        """
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=0, seconds=5),
+                'iat': datetime.datetime.utcnow(),
+                'sub': s
+            }
+            return jwt.encode(
+                payload,
+                app.config.get('SECRET_KEY'),
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
+
     def user_login_model(self,data):
 
         if 'entry_no' in data and 'password' in data and 'role' in data:
@@ -54,12 +75,12 @@ class user_model():
             account=self.cursor.fetchone()
 
             if account:
-                return make_response({"message":"LOGIN_SUCCESSFULLY"},201)
+                return make_response({"message":"LOGIN_SUCCESSFULLY"},201), self.encode_auth_token(entry_num+"#"+role)
 
             else:
-                return make_response({"message":"NO_SUCH_ACCOUNT_EXIT"},404)
+                return make_response({"message":"NO_SUCH_ACCOUNT_EXIT"},404), None
         else:
-            return make_response({"message":"WRONG_INPUT_FORMAT"},404)
+            return make_response({"message":"WRONG_INPUT_FORMAT"},404), None
     
     def user_forgot_password_model(self , data):
 
