@@ -5,3 +5,7 @@ dbconfig = {
     "password":"",
     "database":"App"
 }
+
+vmbconfig = {
+    "address":"127.0.0.1:8701"
+}
