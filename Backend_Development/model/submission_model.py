@@ -18,7 +18,7 @@ class SubmissionModel:
                 assignment_id VARCHAR,
                 entry_no CHAR(40) NOT NULL,
                 status VARCHAR NOT NULL,
-                submission_time INT NOT NULL,
+                submission_time DATETIME NOT NULL,
                 marks FLOAT NOT NULL,
                 plag_path VARCHAR NOT NULL,
                 primary key (course_id, assignment_id, entry_no)
