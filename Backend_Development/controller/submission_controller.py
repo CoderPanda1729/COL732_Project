@@ -19,6 +19,14 @@ def getSubmission(entry_no, course_id,assignment_id):
     else:
         return make_response({'format':" 'Content-Type not supported!'"},404)
 
+@app.route("/getAllSubmissions/<course_id>/<assignment_id>",methods=["GET"])
+def getAllSubmissions(course_id,assignment_id):
+    if(process_json()!='Content-Type not supported!'):
+        obj=SubmissionModel()
+        return obj.submission_get_all(process_json(), course_id, assignment_id)
+    else:
+        return make_response({'format':" 'Content-Type not supported!'"},404)        
+
 @app.route("/uploadSubmission/<entry_no><course_id>/<assignment_id>",methods=["POST"])
 def uploadSubmission(entry_no, course_id,assignment_id, status, submission_time, marks, plag_path):
     if(process_json()!='Content-Type not supported!'):
