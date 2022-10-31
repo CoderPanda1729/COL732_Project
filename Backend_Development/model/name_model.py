@@ -25,9 +25,27 @@ class NameModel:
             print("Some Connection Error")
 
     def name_get(self, entry_no):
-        self.cursor.execute('SELECT name FROM Name WHERE entry_no = %s', entry_no)
+        print(entry_no)
+        sql_query = f"select name from Name where entry_no='{entry_no}';"
+        self.cursor.execute(sql_query)
         name = self.cursor.fetchone()
-        if name:
-            return make_response({"message":"Entry Number found","json":json.dumps(name,default=str)},201)
+        if(name):
+            return name['name']
         else:
-            return make_response({"message":"Entry Number not found"},404)
+            return 'not signed'
+    
+    def add_name(self, entry_no, name):
+        try:
+            sql_query = f"insert into Name(entry_no, name) values('{entry_no}','{name}');"
+            self.cursor.execute(sql_query)
+            return make_response({'message':'Name add'},201)
+        except:
+            return make_response({'message':'Entry number not found'}, 404)
+
+    def delete_name(self, entry_no):
+        try:
+            sql_query = f'delete from Name where entry_no={entry_no}'
+            self.cursor.execute(sql_query)
+            return make_response({'message':'Name deleted'},201)
+        except:
+            return make_response({'message':'Entry number not found'}, 404)

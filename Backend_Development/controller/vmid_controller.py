@@ -28,7 +28,33 @@ def get_VM(entry_no,course_id,ass_id):
         if not isValidToken(token, entry_no, role):
             return make_response({'format':" 'Invalid token!'"},404)
         obj=VmidModel()
-        return obj.vm_get(process_json(), entry_no,course_id, ass_id)
+        return obj.get_vm(entry_no,course_id, ass_id)
+    else:
+        return make_response({'format':" 'Content-Type not supported!'"},404)
+
+@app.route("/getVM/<entry_number>/<course_id>/<ass_id>",methods=["POST"])
+def create_VM(entry_number,course_id,ass_id):
+    if(process_json()!='Content-Type not supported!'):
+        token, role = request.headers['token'], request.headers['role']
+        if not isValidToken(token, entry_number, role):
+            return make_response({'format':" 'Invalid token!'"},404)
+        obj=VmidModel()
+        data = process_json()
+        if 'iso_path' not in data:
+            return obj.create_vm(entry_number,course_id, ass_id)
+        else:
+            return obj.create_vm(entry_number,course_id, ass_id, data['iso_path'])
+    else:
+        return make_response({'format':" 'Content-Type not supported!'"},404)
+
+@app.route("/getVM/<entry_number>/<course_id>/<ass_id>",methods=["GET"])
+def start_VM(entry_number,course_id,ass_id):
+    if(process_json()!='Content-Type not supported!'):
+        token, role = request.headers['token'], request.headers['role']
+        if not isValidToken(token, entry_number, role):
+            return make_response({'format':" 'Invalid token!'"},404)
+        obj=VmidModel()
+        return obj.start_vm(entry_number,course_id, ass_id)
     else:
         return make_response({'format':" 'Content-Type not supported!'"},404)
 
@@ -40,7 +66,7 @@ def resume_VM(entry_no,course_id,ass_id):
         if not isValidToken(token, entry_no, role):
             return make_response({'format':" 'Invalid token!'"},404)
         obj=VmidModel()
-        return obj.resume_vm(json,entry_no ,course_id, ass_id)
+        return obj.resume_vm(entry_no ,course_id, ass_id)
     else:
         return make_response({'format':" 'Content-Type not supported!'"},404)
 
@@ -52,7 +78,7 @@ def pause_VM(entry_no,course_id,ass_id):
         if not isValidToken(token, entry_no, role):
             return make_response({'format':" 'Invalid token!'"},404)
         obj=VmidModel()
-        return obj.pause_vm(json,entry_no ,course_id, ass_id)
+        return obj.pause_vm(entry_no ,course_id, ass_id)
     else:
         return make_response({'format':" 'Content-Type not supported!'"},404)
 

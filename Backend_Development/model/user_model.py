@@ -19,9 +19,7 @@ class user_model():
             sql='''CREATE TABLE user_login(
                 entry_no CHAR(40) NOT NULL,
                 role CHAR(40),
-                name CHAR(60) ,
-                password CHAR(100),
-                primary key(entry_no,role)
+                password CHAR(100)
             )'''
 
             self.cursor.execute(sql)
@@ -67,16 +65,16 @@ class user_model():
     def user_login_model(self,data):
         print(data)
         if 'entry_no' in data and 'password' in data and 'role' in data:
-
+            print(data)
             entry_num=data['entry_no']
             password=data['password']
             role=data['role']
             self.cursor.execute('SELECT * FROM user_login WHERE entry_no = %s AND password = %s AND role=%s ', (entry_num, password,role,))
             account=self.cursor.fetchone()
             print(account)
-            print(self.encode_auth_token(entry_num+"#"+role))
+            print(self.encode_auth_token(entry_num+"#"+role).decode())
             if account:
-                return make_response({"message":"LOGIN_SUCCESSFULLY","token":self.encode_auth_token(entry_num+"#"+role)},201)
+                return make_response({"message":"LOGIN_SUCCESSFULLY","token":self.encode_auth_token(entry_num+"#"+role).decode()},201)
 
             else:
                 return make_response({"message":"NO_SUCH_ACCOUNT_EXIT"},404)

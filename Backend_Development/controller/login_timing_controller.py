@@ -4,13 +4,13 @@ from flask import request
 from flask import make_response
 from .utils import *
 
-def process_json():
-    content_type = request.headers.get('Content-Type')
-    if (content_type == 'application/json'):
-        json = request.json
-        return json
-    else:
-        return 'Content-Type not supported!'
+# def process_json():
+#     content_type = request.headers.get('Content-Type')
+#     if (content_type == 'application/json'):
+#         json = request.json
+#         return json
+#     else:
+#         return 'Content-Type not supported!'
 
 @app.route("/getVM/<string:entry_no>/<string:course_id>/<string:assignment_id>", methods = ["GET"])
 def getVM(entry_no, course_id, assignment_id):
