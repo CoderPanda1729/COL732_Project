@@ -64,4 +64,15 @@ class course_model():
             print("database error")
         courses = self.cursor.fetchall()
         return courses
+
+    def is_ta(self, course_id, entry_no):
+        try:
+            sql_query = f"select * from course where entry_no='{entry_no}' and course_id='{course_id}' and role='TA';"
+            self.cursor.execute(sql_query)
+            if sql_query.fetchone():
+                return True
+            else:
+                return False
+        except:
+            print("database error")
             
