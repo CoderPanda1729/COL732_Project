@@ -5,7 +5,6 @@ from flask import request
 from flask import make_response
 
 
-
 def process_json():
     content_type = request.headers.get('Content-Type')
     if (content_type == 'application/json'):

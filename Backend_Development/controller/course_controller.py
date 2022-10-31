@@ -2,9 +2,14 @@ from app import app
 from model.course_model import course_model
 from model.name_model import NameModel
 from flask import make_response
+from flask import request
+from utils import *
 
 @app.route("/getCourses/<string:entry_no>/<string:role>", methods=["GET"])
 def get_courses(entry_no, role):
+    token, entry_no, role = request.headers['token'], request.args.get('entry_no'), request.args.get('role')
+    if not isValidToken(token, entry_no, role):
+        return make_response({'format':" 'Invalid token!'"},404)
     obj = course_model()
     courses = obj.get_course_model(entry_no, role)
     return make_response({"courses" : courses}, 201) 
