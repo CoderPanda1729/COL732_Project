@@ -1,9 +1,8 @@
 from app import app
-from Backend_Development.controller.utils import isValidToken
 from model.assignment_model import AssignmentModel
 from flask import request
 from flask import make_response
-from utils import *
+from .utils import *
 
 
 
@@ -26,7 +25,7 @@ def process_binary():
 @app.route("/getAssLink/<course_id>/<ass_id>",methods=["GET"])
 def getAssignment(course_id,ass_id):
     if(process_json()!='Content-Type not supported!'):
-        token, entry_no, role = request.headers['token'], request.args.get('entry_no'), request.args.get('role')
+        token, entry_no, role = request.headers['token'], request.headers['entry_no'], request.headers['role']
         if not isValidToken(token, entry_no, role):
             return make_response({'format':" 'Invalid token!'"},404)
         
@@ -38,7 +37,7 @@ def getAssignment(course_id,ass_id):
 @app.route("/uploadAssPdf/<course_id>/<ass_id>",methods=["POST"])
 def uploadAssignmentPdf(course_id,ass_id):
     if(process_binary()!='Content-Type not supported!'):
-        token, entry_no, role = request.headers['token'], request.args.get('entry_no'), request.args.get('role')
+        token, entry_no, role = request.headers['token'],  request.headers['entry_no'], request.headers['role']
         if not isValidToken(token, entry_no, role):
             return make_response({'format':" 'Invalid token!'"},404)        
         obj=AssignmentModel()
@@ -49,7 +48,7 @@ def uploadAssignmentPdf(course_id,ass_id):
 @app.route("/updateAss/<course_id>/<ass_id>",methods=["POST"])
 def updateAssignment(course_id,ass_id):
     if(process_json()!='Content-Type not supported!'):
-        token, entry_no, role = request.headers['token'], request.args.get('entry_no'), request.args.get('role')
+        token, entry_no, role = request.headers['token'], request.headers['entry_no'], request.headers['role']
         if not isValidToken(token, entry_no, role):
             return make_response({'format':" 'Invalid token!'"},404)
         obj=AssignmentModel()

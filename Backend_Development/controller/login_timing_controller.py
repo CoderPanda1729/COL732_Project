@@ -2,7 +2,7 @@ from app import app
 from model.login_timing_model import login_timing_model
 from flask import request
 from flask import make_response
-from utils import *
+from .utils import *
 
 def process_json():
     content_type = request.headers.get('Content-Type')
@@ -14,7 +14,7 @@ def process_json():
 
 @app.route("/getVM/<string:entry_no>/<string:course_id>/<string:assignment_id>", methods = ["GET"])
 def getVM(entry_no, course_id, assignment_id):
-    token, role = request.headers['token'], request.args.get('role')
+    token, role = request.headers['token'], request.headers['role']
     if not isValidToken(token, entry_no, role):
         return make_response({'format':" 'Invalid token!'"},404)
 
@@ -24,7 +24,7 @@ def getVM(entry_no, course_id, assignment_id):
 
 @app.route("/resumeVM/<string:entry_no>/<string:course_id>/<string:assignment_id>", methods = ["GET"])
 def resumeVM(entry_no, course_id, assignment_id):
-    token, role = request.headers['token'], request.args.get('role')
+    token, role = request.headers['token'], request.headers['role']
     if not isValidToken(token, entry_no, role):
         return make_response({'format':" 'Invalid token!'"},404)    
     obj = login_timing_model()
@@ -33,7 +33,7 @@ def resumeVM(entry_no, course_id, assignment_id):
 
 @app.route("/pauseVM/<int:session_id>/<string:entry_no>/<string:course_id>/<string:assignment_id>", methods = ["GET"])
 def pauseVM(session_id, entry_no, course_id, assignment_id):
-    token, role = request.headers['token'], request.args.get('role')
+    token, role = request.headers['token'], request.headers['role']
     if not isValidToken(token, entry_no, role):
         return make_response({'format':" 'Invalid token!'"},404)    
     obj = login_timing_model()
@@ -43,7 +43,7 @@ def pauseVM(session_id, entry_no, course_id, assignment_id):
 
 @app.route("/stopVM/<int:session_id>/<string:entry_no>/<string:course_id>/<string:assignment_id>", methods = ["GET"])
 def stopVM(session_id, entry_no, course_id, assignment_id):
-    token, role = request.headers['token'], request.args.get('role')
+    token, role = request.headers['token'], request.headers['role']
     if not isValidToken(token, entry_no, role):
         return make_response({'format':" 'Invalid token!'"},404)    
     obj = login_timing_model()

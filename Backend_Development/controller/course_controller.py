@@ -1,7 +1,7 @@
 from app import app
 from model.course_model import course_model
 from flask import make_response, request
-from utils import *
+from .utils import *
 
 @app.route("/getCourses/<string:entry_no>/<string:role>", methods=["GET"])
 def get_courses(entry_no, role):
