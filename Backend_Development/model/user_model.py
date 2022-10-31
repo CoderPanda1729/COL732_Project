@@ -1,7 +1,10 @@
 import mysql.connector
 import json
 from flask import make_response
-from configs.config import dbconfig
+from configs.config import dbconfig,server_config
+import jwt
+import datetime
+import app
 
 
 class user_model():
@@ -42,9 +45,27 @@ class user_model():
         else:
             return make_response({"message":"WRONG_INPUT_FORMAT"},404)
 
-        
-    def user_login_model(self,data):
+    def encode_auth_token(self, s):
+        """
+        Generates the Auth Token
+        :return: string
+        """
+        try:
+            payload = {
+                'exp': datetime.datetime.utcnow() + datetime.timedelta(days=1, seconds=0),
+                'iat': datetime.datetime.utcnow(),
+                'sub': s
+            }
+            return jwt.encode(
+                payload,
+                server_config['SECRET_KEY'],
+                algorithm='HS256'
+            )
+        except Exception as e:
+            return e
 
+    def user_login_model(self,data):
+        print(data)
         if 'entry_no' in data and 'password' in data and 'role' in data:
 
             entry_num=data['entry_no']
@@ -52,9 +73,10 @@ class user_model():
             role=data['role']
             self.cursor.execute('SELECT * FROM user_login WHERE entry_no = %s AND password = %s AND role=%s ', (entry_num, password,role,))
             account=self.cursor.fetchone()
-
+            print(account)
+            print(self.encode_auth_token(entry_num+"#"+role))
             if account:
-                return make_response({"message":"LOGIN_SUCCESSFULLY"},201)
+                return make_response({"message":"LOGIN_SUCCESSFULLY","token":self.encode_auth_token(entry_num+"#"+role)},201)
 
             else:
                 return make_response({"message":"NO_SUCH_ACCOUNT_EXIT"},404)
