@@ -35,7 +35,7 @@ def login():
         return obj.user_login_model(process_json())
         
     else:
-        return make_response({'format':" 'Content-Type not supported!'"},404)
+        return make_response({'format':" 'Content-Type not supported!'"},404), None
 
 @app.route("/user/forgotPassword",methods=["POST"])
 def forgotPassword():

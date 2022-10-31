@@ -2,6 +2,7 @@ from app import app
 from model.assignment_model import AssignmentModel
 from flask import request
 from flask import make_response
+from .utils import *
 
 def process_json():
     content_type = request.headers.get('Content-Type')
@@ -15,6 +16,10 @@ def process_json():
 @app.route('/createAss',methods=['POST'])
 def createAssignment():
     if(process_json()!='Content-Type not supported!'):
+        token, entry_no, role = request.headers['token'], request.headers['entry_no'], request.headers['role']
+        if not isValidToken(token, entry_no, role):
+            return make_response({'format':" 'Invalid token!'"},404)
+        
         obj=AssignmentModel()
         return obj.assignment_create(process_json())
     else:
@@ -25,6 +30,9 @@ def updateAssignment():
     #receive the assignment json
     #contains {start_time,end_time,pdfLink,VMID}   
     if(process_json()!='Content-Type not supported!'):
+        token, entry_no, role = request.headers['token'], request.headers['entry_no'], request.headers['role']
+        if not isValidToken(token, entry_no, role):
+            return make_response({'format':" 'Invalid token!'"},404)
         obj=AssignmentModel()
         return obj.assignment_update(process_json())
     else:

@@ -42,6 +42,7 @@ class course_model():
 
     def set_course_model(self, entry_no, role, course_id):
         try:
+            print(entry_no, role,course_id)
             sql_query = f"insert into course(entry_no, role, course_id) values('{entry_no}','{role}','{course_id}');"
             self.cursor.execute(sql_query)
             self.connection.commit()
