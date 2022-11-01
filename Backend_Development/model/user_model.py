@@ -35,7 +35,7 @@ class user_model():
             self.cursor.execute('SELECT * FROM user_login WHERE entry_no = %s  AND role=%s ', (data['entry_no'],data['role'],))
             account=self.cursor.fetchone()
             if not account:
-                self.cursor.execute(f"INSERT INTO user_login(name,entry_no, role, password) VALUES( '{data['name']}','{data['entry_no']}', '{data['role']}', '{data['password']}')")
+                self.cursor.execute(f"INSERT INTO user_login(entry_no, role, password) VALUES('{data['entry_no']}', '{data['role']}', '{data['password']}')")
                 return make_response({"message":"SignUp_SUCCESSFULLY"},201)
             else:
                 return make_response({"message":"ACCOUNT_ALREADY_EXIT"},404)
