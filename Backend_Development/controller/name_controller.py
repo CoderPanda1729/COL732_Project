@@ -13,13 +13,13 @@ def process_json():
         return 'Content-Type not supported!'
 
 @app.route("/getName/<entryNumber>",methods=["GET"])
-def getName():
+def getName(entryNumber):
     json = process_json()
     if(json != 'Content-Type not supported!'):
         token, entry_no, role = request.headers['token'], request.headers['entry_no'], request.headers['role']
         if not isValidToken(token, entry_no, role):
             return make_response({'format':" 'Invalid token!'"},404)        
         obj=NameModel()
-        return obj.name_get(json)
+        return obj.name_get(entryNumber)
     else:
         return make_response({'format':" 'Content-Type not supported!'"},404)

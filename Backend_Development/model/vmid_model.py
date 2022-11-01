@@ -5,6 +5,8 @@ from flask import make_response
 from configs.config import dbconfig, vmbconfig
 from requests import request as http_request
 import shutil
+from .course_model import course_model
+import requests
 
 class VmidModel:
     def __init__(self):

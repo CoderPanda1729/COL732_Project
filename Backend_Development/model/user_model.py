@@ -93,3 +93,15 @@ class user_model():
                 return make_response({"message":"WRONG_INFO"},400) 
         else:
             return make_response({"message":"WRONG_INPUT_FORMAT"},404)
+    
+    def user_change_password(self, data):
+        if ('entry_no' in data and 'role' in data and 'prev_password' in data and 'new_password' in data):
+            self.cursor.execute('SELECT * FROM user_login WHERE entry_no = %s AND password = %s AND role=%s ', (data['entry_no'], data['prev_password'],data['role']))
+            account = self.cursor.fetchone()
+            if(not account):
+                return make_response({'message:Password incorrect'},401)
+            self.cursor.execute(f'')
+            self.cursor.execute(f"UPDATE user_login SET password='{data['new_password']}' WHERE entry_no=%s AND role=%s", (data['entry_no'], data['role']))
+            return make_response({'message':'Change password successful'},201)
+        else:
+            return make_response({"message":"WRONG_INPUT_FORMAT"},400)
