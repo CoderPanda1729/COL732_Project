@@ -1,3 +1,11 @@
+'''dbconfig = {
+    "host":"baadal.krdipen.com",
+    "port":"3306",
+    "username":"col732_gautam",
+    "password":"col732_gautam",
+    "database":"App"
+}
+'''
 dbconfig = {
     "host":"localhost",
     "port":"3306",
@@ -5,9 +13,8 @@ dbconfig = {
     "password":"12345678",
     "database":"App"
 }
-
 vmbconfig = {
-    "address":"127.0.0.1:8701"
+    "address":"http://10.237.23.38:8012"
 }
 
 server_config ={

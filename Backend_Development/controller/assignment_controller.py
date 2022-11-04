@@ -43,3 +43,8 @@ def updateAssignment():
 def getAllAss(course_id):
     obj=AssignmentModel()
     return obj.getAllAss(course_id)
+
+@app.route("/getAss/<course_id>/<asmt_id>")
+def getAsmt(course_id, asmt_id):
+    obj = AssignmentModel()
+    return obj.assignment_get(course_id, asmt_id)

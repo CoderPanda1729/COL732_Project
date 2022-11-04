@@ -14,14 +14,13 @@ class SubmissionModel:
             self.cursor=self.conn.cursor(dictionary=True)
 
             sql='''CREATE TABLE IF NOT EXISTS submission(
-                course_id VARCHAR(10),
-                asmt_id VARCHAR(40),
+                course_id VARCHAR(40),
+                assignment_id VARCHAR(40),
                 entry_no CHAR(40) NOT NULL,
-                status VARCHAR(40) NOT NULL,
                 submission_time INT NOT NULL,
-                marks FLOAT NOT NULL,
-                asmt_path VARCHAR(200) NOT NULL,
-                plag_path VARCHAR(200) NOT NULL,
+                marks FLOAT,
+                asmt_path VARCHAR(200),
+                plag_path VARCHAR(200),
                 primary key (course_id, assignment_id, entry_no)
             )'''
 
@@ -62,6 +61,23 @@ class SubmissionModel:
         return make_response(sendSubmissions,201)
         #else:
         #    return make_response({"message":"No submission found"},404)        
+    def studentSubmit(self,data):
+        entry_no, course_id, asmt_id, time = data['entry_no'],data['course_id'], data['asmt_id'], data['time']
+        check=f"SELECT course_id from submission where course_id='{course_id}' and assignment_id='{asmt_id}' and entry_no='{entry_no}'"
+        check = self.cursor.execute(check)
+        check = self.cursor.fetchone()
+        if(check):
+            update = f"UPDATE submission set submission_time={time} where course_id='{course_id}' and assignment_id='{asmt_id}' and entry_no='{entry_no}';"
+            print('HERE')
+            self.cursor.execute(update)
+            return make_response({'message':'Updated the submission entry'}, 201)
+        else:
+            query = f"INSERT INTO submission(course_id,assignment_id,entry_no,submission_time) VALUES ('{course_id}','{asmt_id}','{entry_no}','{time}')"
+            self.cursor.execute(query)
+            return make_response({'message':'created entry'},201)
+        # except Exception as e:
+        #     print(e)
+        #     return make_response({'message':'Failed to set entry'}, 400)
 
     def submission_upload(self, data, entry_no, course_id,assignment_id, status, submission_time, marks, asmt_path, plag_path):
         try:

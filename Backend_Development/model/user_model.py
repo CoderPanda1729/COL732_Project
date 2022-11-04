@@ -16,7 +16,7 @@ class user_model():
             self.conn.autocommit=True
             self.cursor=self.conn.cursor(dictionary=True)
 
-            sql='''CREATE TABLE user_login(
+            sql='''CREATE TABLE IF NOT EXISTS user_login(
                 entry_no CHAR(40) NOT NULL,
                 role CHAR(40),
                 password CHAR(100)
