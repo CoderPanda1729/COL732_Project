@@ -33,7 +33,7 @@ class VmidModel:
 
             self.cursor.execute(sql)
             print("Connection Established ")
-
+            self.images_path = '../images/'
         except Exception as e:
             print(e)
             print("Some Connection Error")
@@ -66,7 +66,7 @@ class VmidModel:
         self.cursor.execute('SELECT * FROM running_vm WHERE course_id = %s AND assignment_id = %s AND entry_no = %s', (course_id, assignment_id,entry_no))
         vm=self.cursor.fetchone()
         if vm:
-            return make_response({'password':vm['password'],'vmid':vm['vmid']},201)
+            return make_response({'message':'running','password':vm['password'],'vmid':vm['vmid']},201)
         else:
             return make_response({"message":"VM does not exist"},201) 
 
@@ -78,7 +78,7 @@ class VmidModel:
         else:
             return False
     
-    def start_fresh(self,entry_no,course_id, asmt_id, iso="../images/bzimage-hello-busybox"):
+    def start_fresh(self,entry_no,course_id, asmt_id, iso="bzimage_final8"):
         '''
         launch the VM fresh, will be used by the assingnment maker
         iso has to be used, currently hard coded because only that is supported
@@ -88,7 +88,7 @@ class VmidModel:
             return make_response({'message':'start failed'},201)
         password = self.generate_password()
         print('starting', entry_no, password, vmid)
-        resp = create('null','null', iso,False,"vmtap100",entry_no,password,vmid)
+        resp = create('null','null', self.images_path+iso,False,"vmtap100",entry_no,password,vmid)
         rpc_port = resp['port']
         #also send the entry_no,VMID and password to the ssh
         print('create response', resp)
@@ -122,7 +122,7 @@ class VmidModel:
     
 
 
-    def start_template(self, entry_no, course_id, asmt_id):
+    def start_template(self, entry_no, course_id, asmt_id, iso):
         '''
         this is for the student when he starts the assignment
         '''
@@ -132,7 +132,7 @@ class VmidModel:
             # start vm
             resp = create(f"{course_id}_{asmt_id}_cpu_template",
             f"{course_id}_{asmt_id}_mem_template",
-            "../images/bzimage-hello-busybox",
+            self.images_path+iso,
             True, "vmtap100",entry_no,password,vmid)
             if('port' in resp):
                 rpc_port = int(resp['port'])
@@ -149,7 +149,7 @@ class VmidModel:
         else:
             return make_response({"message":"started",'password':vm['password'],'vmid':vm['vmid']},201) 
 
-    def resume_vm(self, entry_no, course_id, asmt_id, iso_path):
+    def resume_vm(self, entry_no, course_id, asmt_id, iso):
         self.cursor.execute('SELECT * FROM running_vm WHERE course_id = %s AND assignment_id = %s AND entry_no = %s', (course_id, asmt_id,entry_no))
         vm=self.cursor.fetchone()
         if not vm:#if not running then launch a VM            
@@ -157,7 +157,7 @@ class VmidModel:
             vmid=self.generate_vmid()
             password=self.generate_password()
             resp = create(f"{course_id}_{asmt_id}_{entry_no}_cpu",f"{course_id}_{asmt_id}_{entry_no}_mem",
-            "../images/bzimage-hello-busybox",True,"vmtap100",entry_no,password,vmid)
+            self.images_path+iso,True,"vmtap100",entry_no,password,vmid)
             if('port' in resp):
                 rpc_port = int(resp['port'])
                 # update table

@@ -19,7 +19,7 @@ class AssignmentModel:
                 asmt_name varchar(200),
                 start_time INT NOT NULL,
                 end_time INT NOT NULL,
-                template_vmid INT,
+                iso varchar(200),
                 pdf_link varchar(200),
                 primary key (course_id,asmt_id)
             )'''
@@ -46,9 +46,10 @@ class AssignmentModel:
         pdf_link = data['pdf_link']
         asmt_name = data['asmt_name']
         asmt_id = data['asmt_id']
+        iso = data['iso']
         start_time = int(data['start_time'])
         end_time = int(data['end_time'])
-        self.cursor.execute(f"UPDATE assignment SET asmt_name='{asmt_name}',start_time={start_time}, end_time={end_time}, pdf_link='{pdf_link}' WHERE course_id=%s AND asmt_id=%s", (course_id, asmt_id))
+        self.cursor.execute(f"UPDATE assignment SET asmt_name='{asmt_name}',start_time={start_time}, end_time={end_time},iso='{iso}', pdf_link='{pdf_link}' WHERE course_id=%s AND asmt_id=%s", (course_id, asmt_id))
         return make_response({"message":"Assignment updated"},201)
     
     def assignment_create(self, data):
@@ -56,12 +57,13 @@ class AssignmentModel:
         pdf_link = data['pdf_link']
         asmt_id = data['asmt_id']
         asmt_name = data['asmt_name']
+        iso = data['iso']
         start_time = int(data['start_time'])
         end_time = int(data['end_time'])
-        self.cursor.execute(f"INSERT INTO assignment(course_id, asmt_id,asmt_name, start_time, end_time, pdf_link) VALUES('{course_id}', '{asmt_id}', '{asmt_name}','{start_time}', '{end_time}','{pdf_link}')")
+        self.cursor.execute(f"INSERT INTO assignment(course_id, asmt_id,asmt_name, start_time, end_time,iso, pdf_link) VALUES('{course_id}', '{asmt_id}', '{asmt_name}','{start_time}', '{end_time}','{iso}','{pdf_link}')")
         return make_response({"message":"Assignment created"},201)
     
     def getAllAss(self,course_id):
-        self.cursor.execute(f"select asmt_id,asmt_name,start_time,end_time,template_vmid,pdf_link from assignment where course_id='{course_id}';")
+        self.cursor.execute(f"select asmt_id,asmt_name,start_time,end_time,iso,pdf_link from assignment where course_id='{course_id}';")
         asmts = self.cursor.fetchall()
         return asmts
