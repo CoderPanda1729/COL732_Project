@@ -5,6 +5,12 @@ from model.name_model import NameModel
 from flask import make_response, request
 from .utils import *
 
+# please don't remove 
+@app.route("/ping", methods=["GET"])
+def ping():
+    print("running")
+    return make_response({"status" : "running"}, 200)
+
 @app.route("/getCourses/<string:entry_no>/<string:role>", methods=["GET"])
 def get_courses(entry_no, role):
     token = request.headers['token']
