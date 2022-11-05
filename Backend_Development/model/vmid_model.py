@@ -80,7 +80,7 @@ class VmidModel:
         return make_response({"message":"VM created"},201) 
 
     def start_vm(self, entry_no, course_id, assignment_id,version):
-        self.cursor.execute('SELECT * FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no = %s AND version=%d', (course_id, assignment_id,entry_no,version))
+        self.cursor.execute('SELECT * FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no = %s AND version=%s', (course_id, assignment_id,entry_no,version))
         vm=self.cursor.fetchone()        
         if vm:
             if vm['status']!='STOPPED':
@@ -96,15 +96,15 @@ class VmidModel:
             if r.status_code >= 400:
                 return make_response({"message":"Couldn't start VM", "json":r.json()},500) 
             rpc_port = int(r.text)
-
+            # rpc_port=1
             # update table
-            self.cursor.execute(f"UPDATE vmid SET rpc_port=%s, status='RUNNING' WHERE course_id=%s AND assignment_id=%s AND entry_no=%s AND version=%d", (rpc_port, course_id,assignment_id, entry_no,version))
+            self.cursor.execute(f"UPDATE vmid SET rpc_port=%s, status='RUNNING' WHERE course_id=%s AND assignment_id=%s AND entry_no=%s AND version=%s", (rpc_port, course_id,assignment_id, entry_no,version))
             return make_response({"message":"VM Started", "rpc_port":rpc_port}, 200)
         else:
             return make_response({"message":"VM doesn't exist"},404) 
 
     def resume_vm(self, entry_no, course_id, assignment_id,version):
-        self.cursor.execute('SELECT * FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no = %s AND version=%d', (course_id, assignment_id,entry_no,version   ))
+        self.cursor.execute('SELECT * FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no = %s AND version=%s', (course_id, assignment_id,entry_no,version   ))
         vm=self.cursor.fetchone()
         # return everything in assignment if it exists
         if vm:            
@@ -122,16 +122,16 @@ class VmidModel:
             if r.status_code >= 400:
                 return make_response({"message":"Couldn't start VM", "json":r.json()},500) 
             rpc_port = int(r.text)
-
+            # rpc_port=1
             # update table
-            self.cursor.execute(f"UPDATE vmid SET rpc_port=%s, status='RUNNING' WHERE course_id=%s AND assignment_id=%s AND entry_no=%s AND version=%d", (rpc_port, course_id,assignment_id , entry_no,version))
+            self.cursor.execute(f"UPDATE vmid SET rpc_port=%s, status='RUNNING' WHERE course_id=%s AND assignment_id=%s AND entry_no=%s AND version=%s", (rpc_port, course_id,assignment_id , entry_no,version))
             return make_response({"message":"VM Resumed", "rpc_port":rpc_port},201)
         else:
             # VM record NOT FOUND
             return make_response({"message":"No Record Found "},404) 
                     
     def pause_vm(self, entry_no, course_id, assignment_id,version):
-        self.cursor.execute('SELECT * FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no = %s AND version=%d', (course_id, assignment_id,entry_no,version   ))
+        self.cursor.execute('SELECT * FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no = %s AND version=%s', (course_id, assignment_id,entry_no,version   ))
         
         vm=self.cursor.fetchone()
         # return everything in assignment if it exists
@@ -149,9 +149,8 @@ class VmidModel:
             r = requests.post(vmbconfig+"/snapshot", json=json_req)
             if r.status_code >= 400:
                 return make_response({"message":"Couldn't start VM", "json":r.json()},500) 
-
             # update table
-            self.cursor.execute(f"UPDATE vmid SET rpc_port=%s, status='PAUSED' WHERE course_id=%s AND assignment_id=%s AND entry_no=%s AND version=%d", (0, course_id,assignment_id , entry_no,version))
+            self.cursor.execute(f"UPDATE vmid SET rpc_port=%s, status='PAUSED' WHERE course_id=%s AND assignment_id=%s AND entry_no=%s AND version=%s", (0, course_id,assignment_id , entry_no,version))
             
             return make_response({"message":r.text},201)
         else:
@@ -159,7 +158,7 @@ class VmidModel:
             return make_response({"message":"No Record Found "},404)   
     
     def get_plag_report(self,data,entry_no,course_id,assignment_id,version):
-        self.cursor.execute('SELECT * FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no = %s AND version=%d', (course_id, assignment_id,entry_no,version   ))
+        self.cursor.execute('SELECT * FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no = %s AND version=%s', (course_id, assignment_id,entry_no,version   ))
         
         vm=self.cursor.fetchone()
         # return everything in assignment if it exists
@@ -185,11 +184,13 @@ class VmidModel:
 
     def fork(self, entry_no, course_id, assignment_id,parent_version,new_version_name):
         # Check if parent version exist
-        self.cursor.execute('SELECT * FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no=%s AND version=%d', (course_id, assignment_id,entry_no,parent_version))
+        self.cursor.execute('SELECT * FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no = %s AND version = %s', (course_id, assignment_id,entry_no,parent_version))
         versions=self.cursor.fetchone()
+        print(versions)
         if versions:
-            self.cursor.execute('SELECT max(version) FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no=%s', (course_id, assignment_id,entry_no))
-            next_version=self.cursor.fetchone()[0]+1
+            self.cursor.execute('SELECT MAX(version) FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no=%s', (course_id, assignment_id,entry_no))
+        
+            next_version=self.cursor.fetchone()['MAX(version)']+1
             for i in [".iso","_cpu","_mem"]:
                 previous_path = f'./{course_id}_{assignment_id}_{entry_no}_{parent_version}_vm{i}'
                 new_path = f'./{course_id}_{assignment_id}_{entry_no}_{next_version}_vm{i}'
@@ -205,11 +206,11 @@ class VmidModel:
             return make_response({"message":"Version Not Found"},404)
     
     def delete_query(self,entry_no,course_id,assignment_id,version):
-        self.cursor.execute('SELECT version FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no=%s AND par_version=%d', (course_id, assignment_id,entry_no,version))
+        self.cursor.execute('SELECT version FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no=%s AND par_version=%s', (course_id, assignment_id,entry_no,version))
         versions=self.cursor.fetchall()
         
         ## DELETE QUERY
-        self.cursor.execute('DELETE FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no=%s AND version=%d', (course_id, assignment_id,entry_no,version))
+        self.cursor.execute('DELETE FROM vmid WHERE course_id = %s AND assignment_id = %s AND entry_no=%s AND version=%s', (course_id, assignment_id,entry_no,version))
         
         for i in [".iso","_cpu","_mem"]:
             previous_path = f'./{course_id}_{assignment_id}_{entry_no}_{version}_vm{i}'
@@ -219,3 +220,4 @@ class VmidModel:
 
         for child in versions:
             self.delete_query(entry_no,course_id,assignment_id,child['version'])
+        return make_response({"message":f"Deleted {version}",},201)
