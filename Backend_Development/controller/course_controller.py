@@ -39,7 +39,8 @@ def getMembers(course_id):
     obj = course_model()
     mems = obj.getAllMembers(course_id)
     obj2 = NameModel()
-    names = [obj2.name_get(e['entry_no']) for e in mems]
+    # todo : check next line
+    names = [obj2.name_get(e['entry_no']).json['name'] for e in mems]
     res = [{'name':names[i],'entry_no':mems[i]['entry_no'], 'role':mems[i]['role']} for i in range(len(names)) ]
     return make_response({'members':res}, 201)
 

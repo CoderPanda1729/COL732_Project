@@ -5,7 +5,8 @@ from flask import make_response
 from configs.config import dbconfig, vmbconfig
 from requests import request as http_request
 import shutil
-
+import requests
+from .course_model import course_model
 class VmidModel:
     def __init__(self):
         # print("hi there")
@@ -89,7 +90,7 @@ class VmidModel:
                 "resume" : False,
             }
             r = requests.post(vmbconfig+"/create", json=json_req)
-            if r.status_code < 400:
+            if r.status_code >= 400:
                 return make_response({"message":"Couldn't start VM", "json":r.json()},500) 
             rpc_port = int(r.text)
 
@@ -115,7 +116,7 @@ class VmidModel:
                 "resume" : True,
             }
             r = requests.post(vmbconfig+"/create", json=json_req)
-            if r.status_code < 400:
+            if r.status_code >= 400:
                 return make_response({"message":"Couldn't start VM", "json":r.json()},500) 
             rpc_port = int(r.text)
 
@@ -142,7 +143,7 @@ class VmidModel:
                 "resume" : False
             }
             r = requests.post(vmbconfig+"/snapshot", json=json_req)
-            if r.status_code < 400:
+            if r.status_code >= 400:
                 return make_response({"message":"Couldn't start VM", "json":r.json()},500) 
 
             # update table

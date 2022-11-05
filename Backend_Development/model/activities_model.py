@@ -2,6 +2,7 @@ import mysql.connector
 from configs.config import dbconfig
 from datetime import datetime
 import time
+from flask import make_response
 
 class activities_model():
     def __init__(self):
@@ -14,6 +15,7 @@ class activities_model():
                 assignment_id CHAR(100),
                 operation varchar(40),
                 time int,
+                primary key (entry_no,assignment_id)
                 '''
 
             self.cursor.execute(sql)
@@ -26,8 +28,9 @@ class activities_model():
             t = round(time.time(),0) 
             query = f"insert into student_activity(entry_no, assignment_id, operation, time) values('{entry_no}', '{assign_id}', '{operation}', {t})"
             self.cursor.execute(query)
+            return make_response({"message":"Succesfully updated"},201)
         except:
-            print("Error!")
+            return make_response({"message":"Error"},404)
 
     def get_records(self, entry_no, assign_id):
         try:
@@ -37,11 +40,12 @@ class activities_model():
             results = self.cursor.fetchall()
             l = []
             for x in results:
-                l.append(x[0], x[1])
-            return l
-
+                l.append((x[0], x[1]))
+            # return l
+            return make_response({"message":"Succesfully updated","record":l},201)
         except:
-            print("Error!")
+            return make_response({"message":"Error"},404)
+            
 
 
 

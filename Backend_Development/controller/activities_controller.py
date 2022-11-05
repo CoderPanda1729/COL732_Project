@@ -17,14 +17,20 @@ def recordActivities(entry_num, assign_id, operation):
 
 @app.route("/getActivityRecords/<entry_num>/<assign_id>", methods = ["GET"])
 def getActivityRecords(entry_num, assign_id):
-    token, role = request.headers['token'], request.headers['role']
+    token = request.headers['token']
+    role=request.headers['role']
     if not isValidToken(token, entry_num, role):
         return make_response({'format':" 'Invalid token!'"},404)
 
     obj = activities_model()
-    l = obj.get_records(entry_num, assign_id)
-    return make_response({assign_id: l, 'status': 'returned'}, 201)
-
+    # todo : check this 
+    # print(obj.get_records(entry_num, assign_id).json)
+    try:
+        l = obj.get_records(entry_num, assign_id).json['record']
+        return make_response({assign_id: l, 'status': 'returned'}, 201)
+    except: 
+        return make_response({'status': 'Error'}, 404)
+    
 
 
 

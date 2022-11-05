@@ -15,7 +15,6 @@ def decode_auth_token(s):
         return 'Invalid token. Please log in again.'
 
 def isValidToken(s, entry_num, role):
-    print("yoy ", type(s), s)
+    print(s)
     st=decode_auth_token(str(s))
-    print(st, entry_num+"#"+role)
     return st == entry_num+"#"+role

@@ -1,6 +1,7 @@
 import mysql.connector
 from configs.config import dbconfig
 from datetime import datetime
+## Right now not in use
 
 class login_timing_model():
     def __init__(self):

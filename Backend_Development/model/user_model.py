@@ -6,7 +6,6 @@ import jwt
 import datetime
 import app
 
-
 class user_model():
     def __init__(self):
 
@@ -31,7 +30,7 @@ class user_model():
     def user_signup_model(self,data):
 
         if 'entry_no' in data and 'password' in data and 'role' in data and 'name' in data:
-
+            
             self.cursor.execute('SELECT * FROM user_login WHERE entry_no = %s  AND role=%s ', (data['entry_no'],data['role'],))
             account=self.cursor.fetchone()
             if not account:
@@ -63,18 +62,17 @@ class user_model():
             return e
 
     def user_login_model(self,data):
-        print(data)
         if 'entry_no' in data and 'password' in data and 'role' in data:
-            print(data)
             entry_num=data['entry_no']
             password=data['password']
             role=data['role']
             self.cursor.execute('SELECT * FROM user_login WHERE entry_no = %s AND password = %s AND role=%s ', (entry_num, password,role,))
             account=self.cursor.fetchone()
-            print(account)
-            print(self.encode_auth_token(entry_num+"#"+role).decode())
             if account:
-                return make_response({"message":"LOGIN_SUCCESSFULLY","token":self.encode_auth_token(entry_num+"#"+role).decode()},201)
+                st=self.encode_auth_token(entry_num+"#"+role)
+                if (type(st) !=str):
+                    st=st.decode()
+                return make_response({"message":"LOGIN_SUCCESSFULLY","token":st},201)
 
             else:
                 return make_response({"message":"NO_SUCH_ACCOUNT_EXIT"},404)

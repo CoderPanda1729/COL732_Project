@@ -25,14 +25,13 @@ class NameModel:
             print("Some Connection Error")
 
     def name_get(self, entry_no):
-        print(entry_no)
         sql_query = f"select name from Name where entry_no='{entry_no}';"
         self.cursor.execute(sql_query)
         name = self.cursor.fetchone()
         if(name):
-            return name['name']
+            return make_response({'message':'Name add',"name":name['name']},201)
         else:
-            return 'not signed'
+            return make_response({'message':'Name Not found'},404)           
     
     def add_name(self, entry_no, name):
         try:
