@@ -11,28 +11,29 @@ class activities_model():
             self.cursor=self.conn.cursor(dictionary=True)
             sql='''CREATE TABLE if not exists student_activity(
                 entry_no varchar(40) NOT null,
-                assignment_id CHAR(100),
+                course_id varchar(40) not null,
+                assignment_id CHAR(100) not null,
                 operation varchar(40),
-                time int,
+                time int)
                 '''
 
             self.cursor.execute(sql)
-            print("Connection Established ")
+            print("Activity: Connection Established ")
         except:
-            print("Connection Error")
+            print("activity model: Connection Error")
         
-    def record_activity(self, entry_no, assign_id, operation):
+    def record_activity(self, entry_no,course_id, assign_id, operation):
         try:
             t = round(time.time(),0) 
-            query = f"insert into student_activity(entry_no, assignment_id, operation, time) values('{entry_no}', '{assign_id}', '{operation}', {t})"
+            query = f"insert into student_activity(entry_no,course_id, assignment_id, operation, time) values('{entry_no}','{course_id}', '{assign_id}', '{operation}', {t})"
             self.cursor.execute(query)
         except:
             print("Error!")
 
-    def get_records(self, entry_no, assign_id):
+    def get_records(self, entry_no,course_id, assign_id):
         try:
             query = f'''select operation, time from student_activity 
-            where entry_no = '{entry_no}' and assignment_id = '{assign_id}'; '''
+            where entry_no = '{entry_no}' and assignment_id = '{assign_id}'  and course_id = '{course_id}'; '''
             self.cursor.execute(query)
             results = self.cursor.fetchall()
             l = []
