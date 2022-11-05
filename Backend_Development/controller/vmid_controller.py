@@ -95,3 +95,41 @@ def getPlagReport(entry_no,course_id,ass_id):
         return obj.get_plag_report(json,entry_no ,course_id, ass_id)
     else:
         return make_response({'format':" 'Content-Type not supported!'"},404)
+
+
+@app.route("/getTree/<entry_number>/<course_id>/<assignment_id>",methods=["GET"])
+def getTree(entry_no,course_id,assignment_id):
+    json=process_json()
+    if(json!='Content-Type not supported!'):
+        token, role = request.headers['token'], request.headers['role']
+        if not isValidToken(token, entry_no, role):
+            return make_response({'format':" 'Invalid token!'"},404)
+        obj=VmidModel()
+        return obj.get_tree(entry_no,course_id,assignment_id)
+    else:
+        return make_response({'format':" 'Content-Type not supported!'"},404)
+
+@app.route("/fork/<entry_number>/<course_id>/<assignment_id>/<parent_version>/<new_version_name>",methods=["POST"])
+def fork(entry_no,course_id,assignment_id,parent_version,new_version_name):
+    json=process_json()
+    if(json!='Content-Type not supported!'):
+        token, role = request.headers['token'], request.headers['role']
+        if not isValidToken(token, entry_no, role):
+            return make_response({'format':" 'Invalid token!'"},404)
+        obj=VmidModel()
+        return obj.fork(entry_no, course_id, assignment_id,parent_version,new_version_name)
+    else:
+        return make_response({'format':" 'Content-Type not supported!'"},404)
+
+@app.route("/delete/<entry_number>/<course_id>/<assignment_id>/<version>",methods=["POST"])
+def delete(entry_no,course_id,assignment_id,version):
+    json=process_json()
+    if(json!='Content-Type not supported!'):
+        token, role = request.headers['token'], request.headers['role']
+        if not isValidToken(token, entry_no, role):
+            return make_response({'format':" 'Invalid token!'"},404)
+        obj=VmidModel()
+        return obj.delete_query(entry_no,course_id,assignment_id,version)
+    else:
+        return make_response({'format':" 'Content-Type not supported!'"},404)
+
