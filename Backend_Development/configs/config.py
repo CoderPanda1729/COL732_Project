@@ -13,7 +13,8 @@ dbconfig = {
     "username":"root",
     "password":"12345678",
     "database":"App"
-}'''
+}
+'''
 dbconfig = {
     "host":"localhost",
     "port":"3306",
@@ -21,6 +22,7 @@ dbconfig = {
     "password":"password",
     "database":"App"
 }
+
 vmbconfig = {
     "address":"http://10.237.23.38:8012"
 }

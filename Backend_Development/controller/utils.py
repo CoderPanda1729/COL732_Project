@@ -33,7 +33,7 @@ def create(cpu_snap:str, mem_snap:str, kp:str, resume:bool, tap_dev:str, user:st
                 "id":id,
         }
     }
-    r = requests.post("http://10.237.23.38:8012/create", json=json_req)
+    r = requests.post("http://10.237.23.38:8014/create", json=json_req)
     return r.json()
 
 def snapshot(cpu_snap:str, mem_snap:str, rpc_port:int, resume:bool, tap_dev:str):
@@ -45,5 +45,5 @@ def snapshot(cpu_snap:str, mem_snap:str, rpc_port:int, resume:bool, tap_dev:str)
         "resume" : resume,
         "tap_device":tap_dev
     }
-    r = requests.post("http://10.237.23.38:8012/snapshot", json=json_req)
+    r = requests.post("http://10.237.23.38:8014/snapshot", json=json_req)
     return (r.text)
