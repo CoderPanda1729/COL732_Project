@@ -36,12 +36,12 @@ class marksModel:
         return make_response({"message": "Data added succesfully."}, 201)
 
     def setMarks(self, course_id, assign_id, entry_no, marks, remarks):
-        query = f'''select * form grades where entry_no = '{entry_no}' and
+        query = f'''select * from grades where entry_no = '{entry_no}' and
                 course_id = '{course_id}' and assignment_id = '{assign_id}' '''
         self.cursor.execute(query)
         result = self.cursor.fetchone()
         if result:
-            query = f'''Update grades set marks = {marks}, remarks = {remarks} where entry_no = '{entry_no}' 
+            query = f'''Update grades set marks = {marks}, remarks = '{remarks}' where entry_no = '{entry_no}' 
                     and course_id = '{course_id}' and assignment_id = '{assign_id}' '''
             self.cursor.execute(query)
             return make_response({"message": "Marks added"}, 201)
@@ -49,7 +49,7 @@ class marksModel:
             return make_response({"message": "No entry found!"}, 404)
 
     def getMarks(self, course_id, assign_id, entry_no):
-        query = f'''select * form grades where entry_no = '{entry_no}' and
+        query = f'''select * from grades where entry_no = '{entry_no}' and
                 course_id = '{course_id}' and assignment_id = '{assign_id}' '''
         self.cursor.execute(query)
         marks = self.cursor.fetchone()
@@ -59,7 +59,7 @@ class marksModel:
             return make_response({"message":"Submission not found"},404)
 
     def getAllMarks(self, course_id, assign_id):
-        query = f'''select * form grades where course_id = '{course_id}' and assignment_id = '{assign_id}' '''
+        query = f'''select * from grades where course_id = '{course_id}' and assignment_id = '{assign_id}' '''
         self.cursor.execute(query)
         marks = self.cursor.fetchall
         if marks:
@@ -68,7 +68,7 @@ class marksModel:
             return make_response({"message":"No Submission found"},404)
 
     def runAutoGrader(self, course_id, assign_id, entry_no, auto_marks, plag_pts):
-        query = f'''select * form grades where entry_no = '{entry_no}' and
+        query = f'''select * from grades where entry_no = '{entry_no}' and
                 course_id = '{course_id}' and assignment_id = '{assign_id}' '''
         self.cursor.execute(query)
         result = self.cursor.fetchone()
