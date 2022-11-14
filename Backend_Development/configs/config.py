@@ -1,7 +1,7 @@
 dbconfig = {
-    "host":"localhost",
+    "host":"baadal.krdipen.com",
     "port":"3306",
-    "username":"root",
-    "password":"",
+    "username":"col732_gautam",
+    "password":"col732_gautam",
     "database":"App"
 }
