@@ -1,7 +1,7 @@
 $ sudo apt update
 $ sudo apt install apache2
 $ sudo apt-get install libapache2-mod-wsgi-py3
-$ cp ~/COL732_Project/Backend_Development/COL732_Project.conf /etc/apache2/sites-available
+$ sudo cp /home/col732_gautam/COL732_Project/Backend_Development/COL732_Project.conf /etc/apache2/sites-available
 $ sudo a2ensite COL732_Project.conf
-$ sudo systemctl restart apache2
+$ sudo systemctl reload apache2
 $ sudo systemctl status apache2
