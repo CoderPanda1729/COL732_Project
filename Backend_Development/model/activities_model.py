@@ -14,6 +14,10 @@ class activities_model():
                 entry_no varchar(40) NOT null,
                 assignment_id CHAR(100),
                 operation varchar(40),
+                static_dist int,
+                grading_time int,
+                cheat_label int,
+                marks int,
                 time int,
                 primary key (entry_no,assignment_id)
                 '''
@@ -23,10 +27,10 @@ class activities_model():
         except:
             print("Connection Error")
         
-    def record_activity(self, entry_no, assign_id, operation):
+    def record_activity(self, entry_no, assign_id,course_id, operation):
         try:
             t = round(time.time(),0) 
-            query = f"insert into student_activity(entry_no, assignment_id, operation, time) values('{entry_no}', '{assign_id}', '{operation}', {t})"
+            query = f"insert into student_activity(entry_no, assignment_id, operation, time) values('{entry_no}', '{course_id+'_'+assign_id}', '{operation}', {t})"
             self.cursor.execute(query)
             return make_response({"message":"Succesfully updated"},201)
         except:
@@ -45,7 +49,16 @@ class activities_model():
             return make_response({"message":"Succesfully updated","record":l},201)
         except:
             return make_response({"message":"Error"},404)
-            
+    
+    def getAllMarks(self, course_id, asmt_id):
+        query = f'''
+            select entry_no, max(marks), cheat_label
+            from student_activity
+            where assignment_id = {course_id+'_'+asmt_id}
+            group by entry_no;
+        '''
+        res = self.cursor.fetchall()
+        return make_response(res)
 
 
 
