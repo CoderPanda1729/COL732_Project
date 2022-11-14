@@ -81,30 +81,28 @@ class VmidModel:
             return False
     
     ##Prashant Mishra 
-    # @app.route("/check/<string:entry_no>/<string:course_id>/<string:asmt_id>",methods=["POST"])
-    def start_fresh(entry_no,course_id, asmt_id, iso="bzimage_final8"):
-    # def start_fresh(self,entry_no,course_id, asmt_id, iso="bzimage_final8"):
+#  
+    def start_fresh(self,entry_no,course_id, asmt_id, iso="bzimage_final8"):
         '''
         launch the VM fresh, will be used by the assingnment maker
         iso has to be used, currently hard coded because only that is supported
         '''
-        # vmid = self.generate_vmid()
-        # if(vmid == -1):
-        #     return make_response({'message':'start failed'},201)
-        # password = self.generate_password()
-        # print('starting', entry_no, password, vmid)
-        # resp = create('null','null', self.images_path+iso,False,"vmtap100",entry_no,password,vmid)
+        vmid = self.generate_vmid()
+        if(vmid == -1):
+            return make_response({'message':'start failed'},201)
+        password = self.generate_password()
+        print('starting', entry_no, password, vmid)
+        resp = create('null','null', self.images_path+iso,False,"vmtap100",entry_no,password,vmid)
         activity_obj=activities_model()
         activity_obj.record_activity(entry_no,course_id,asmt_id,"start")
-        # rpc_port = resp['port']
-        #also send the entry_no,VMID and password to the ssh
+        rpc_port = resp['port']
+        # also send the entry_no,VMID and password to the ssh
 
-        # print('create response', resp)
-        # sql=f'''INSERT INTO running_vm(entry_no,course_id,assignment_id,rpc_port,vmid,password) 
-        #         VALUES ('{entry_no}','{course_id}','{asmt_id}',{rpc_port},{vmid},'{password}')'''
-        # self.cursor.execute(sql)
-        return make_response({'message':'started','password':"password",'vmid':11})
-        # return make_response({'message':'started','password':password,'vmid':vmid})
+        print('create response', resp)
+        sql=f'''INSERT INTO running_vm(entry_no,course_id,assignment_id,rpc_port,vmid,password) 
+                VALUES ('{entry_no}','{course_id}','{asmt_id}',{rpc_port},{vmid},'{password}')'''
+        self.cursor.execute(sql)
+        return make_response({'message':'started','password':password,'vmid':vmid})
     
     def save_template(self, entry_no,course_id,asmt_id):
         '''
